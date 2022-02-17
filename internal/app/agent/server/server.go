@@ -9,11 +9,13 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/dollarkillerx/fireworks/internal/conf"
 	"github.com/dollarkillerx/fireworks/internal/pkg/models"
 	"github.com/dollarkillerx/fireworks/internal/pkg/utils"
+	"github.com/dollarkillerx/processes"
 	"github.com/dollarkillerx/urllib"
 )
 
@@ -56,6 +58,8 @@ func (a *AgentServer) Run() error {
 			log.Println(err)
 			continue
 		}
+
+		a.deploy(agent)
 	}
 
 	return nil
@@ -84,6 +88,59 @@ func (a *AgentServer) deploy(agent models.Agent) {
 		return
 	}
 
+	// load docker images
+	if agent.DockerImages != "" {
+		err = a.loadDockerImage(path.Join(agent.TaskName, "images"))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+
+	cmd := processes.NewExecLinux()
+	_, err = cmd.Exec("cd " + agent.TaskName)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	exec, err := cmd.Exec("docker-compose up -d")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Println(exec)
+}
+
+func (a *AgentServer) loadDockerImage(path string) error {
+	dir, err := ioutil.ReadDir(path)
+	if err != nil {
+		return err
+	}
+
+	cmd := processes.NewExecLinux()
+	_, err = cmd.Exec("cd " + path)
+	if err != nil {
+		return err
+	}
+
+	for _, v := range dir {
+		if v.IsDir() {
+			continue
+		}
+
+		if strings.Contains(v.Name(), ".tar") {
+			exec, err := cmd.Exec(fmt.Sprintf("docker load -i %s", v.Name()))
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(exec)
+		}
+	}
+
+	return nil
 }
 
 func (a *AgentServer) download(path string, fp string) error {

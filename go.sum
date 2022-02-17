@@ -1,5 +1,7 @@
 github.com/dollarkillerx/common v0.0.3 h1:fQ4UxmS7dOzHdMqjMsV+V97foclFQKFDIxmZTVirUaM=
 github.com/dollarkillerx/common v0.0.3/go.mod h1:i78p63/PxmO8YrrzMnr+yWwkFOCG0lFrJz7JEBIL+ck=
+github.com/dollarkillerx/processes v0.0.3 h1:eq/inhEwgK7fDkVE3hJH5oKoefn0fY+U7pPwQmQ7HwQ=
+github.com/dollarkillerx/processes v0.0.3/go.mod h1:LgxcR+R9XlMfSE38MxYyBkV6i8tIaCOz3HBWyV3pGoc=
 github.com/dollarkillerx/urllib v1.13.16 h1:uBjhLYuRw/Gr2IZkMtWgEzlZfpx/dXPFEaNd1SaAVEY=
 github.com/dollarkillerx/urllib v1.13.16/go.mod h1:PARM2eEF6LGZs+LU1iP0Q8MdtIMadV+APnG9qz7ny8E=
 github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca h1:NugYot0LIVPxTvN8n+Kvkn6TrbMyxQiuvKdEwFdR9vI=
