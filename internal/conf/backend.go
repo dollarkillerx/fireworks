@@ -3,8 +3,12 @@ package conf
 import cfg "github.com/dollarkillerx/common/pkg/config"
 
 type BackendConfig struct {
-	ListenAddr string
-	Key        string
+	ServerAddr string
+
+	ListenAddr     string
+	Debug          bool
+	JWTToken       string
+	PostgresConfig cfg.PostgresConfiguration
 }
 
 func InitBackendConfig(configName string, configPaths []string) (*BackendConfig, error) {
