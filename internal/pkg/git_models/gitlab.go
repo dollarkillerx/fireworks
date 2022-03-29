@@ -1,21 +1,25 @@
 package git_models
 
-import "time"
+import (
+	"github.com/dollarkillerx/fireworks/internal/pkg/enum"
+
+	"time"
+)
 
 type GitlabWebHook struct {
-	ObjectKind   string `json:"object_kind"` // tag_push, push, merge_request
-	EventName    string `json:"event_name"`
-	Before       string `json:"before"`
-	After        string `json:"after"`
-	Ref          string `json:"ref"` // refs/tags/v0.0.1-dev,refs/heads/master
-	CheckoutSha  string `json:"checkout_sha"`
-	Message      string `json:"message"`
-	UserId       int    `json:"user_id"`
-	UserName     string `json:"user_name"`
-	UserUsername string `json:"user_username"`
-	UserEmail    string `json:"user_email"`
-	UserAvatar   string `json:"user_avatar"`
-	ProjectId    int    `json:"project_id"`
+	ObjectKind   enum.TaskAction `json:"object_kind"` // tag_push, push, merge_request
+	EventName    string          `json:"event_name"`
+	Before       string          `json:"before"`
+	After        string          `json:"after"`
+	Ref          string          `json:"ref"` // refs/tags/v0.0.1-dev,refs/heads/master
+	CheckoutSha  string          `json:"checkout_sha"`
+	Message      string          `json:"message"`
+	UserId       int             `json:"user_id"`
+	UserName     string          `json:"user_name"`
+	UserUsername string          `json:"user_username"`
+	UserEmail    string          `json:"user_email"`
+	UserAvatar   string          `json:"user_avatar"`
+	ProjectId    int             `json:"project_id"`
 	Project      struct {
 		Id                int         `json:"id"`
 		Name              string      `json:"name"`

@@ -30,11 +30,12 @@ type task interface {
 	UpdateTask(taskID string, name string, token string, description string) error
 	DelTask(taskID string) error
 
-	CreateSubtasks(taskID string, name string, agentID string, branch string, instruction string, description string) error
-	UpdateSubtasks()
-	DelSubtasks()
+	CreateSubtasks(taskID string, name string, agentID string, branch string, action enum.TaskAction, instruction string, description string) error
+	GetSubtasks(taskID string) ([]models.Subtasks, error)
+	DisabledSubtasks(subtasksID string) error
+	DelSubtasks(subtasksID string) error
 
-	CreateTaskLog()
-	//GetTaskLog()
-	UpdateTaskLog()
+	CreateTaskLog(subtasksID string) (id string, err error)
+	UpdateTaskLog(logID string, taskStatus enum.TaskStatus, taskStage enum.TaskStage, logText string) error
+	GetTaskLog(subtasksID string) (logs []models.TaskLog, err error)
 }

@@ -5,7 +5,7 @@ import "github.com/dollarkillerx/fireworks/internal/pkg/enum"
 // TaskLog 任务日志
 type TaskLog struct {
 	BaseModel
-	TaskID     string          `gorm:"type:varchar(600);index" json:"task_id"`
+	SubtasksID string          `gorm:"type:varchar(600);index" json:"subtasks_id"`
 	TaskStatus enum.TaskStatus `gorm:"type:varchar(600);index" json:"task_status"`
 	TaskStage  enum.TaskStage  `gorm:"type:varchar(600);index" json:"task_stage"`
 	Log        string          `gorm:"type:text"`
@@ -29,5 +29,6 @@ type Subtasks struct {
 	Action      enum.TaskAction `gorm:"type:varchar(600);index" json:"action"`   // action
 	Instruction string          `gorm:"type:text" json:"instruction"`            // 指令
 	Description string          `gorm:"type:text" json:"description"`
-	Payload     string          `gorm:"type:text" json:"payload"` // git payload
+	Payload     string          `gorm:"type:text" json:"payload"`   // git payload
+	Disabled    bool            `gorm:"type:index" json:"disabled"` //　禁用
 }
