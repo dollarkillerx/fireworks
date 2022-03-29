@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/dollarkillerx/common v0.0.3 // indirect
 	github.com/dollarkillerx/jwt v0.0.3 // indirect
-	github.com/dollarkillerx/processes v0.0.3 // indirect
+	github.com/dollarkillerx/processes v0.0.4 // indirect
 	github.com/dollarkillerx/urllib v1.13.16 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.7.7 // indirect
