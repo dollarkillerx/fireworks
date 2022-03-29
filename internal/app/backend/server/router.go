@@ -7,5 +7,6 @@ func (b *Backend) router() {
 	v1Api := b.app.Group("/api/v1", authToken())
 	{
 		v1Api.POST("/create_user", b.createUser)
+
 	}
 }

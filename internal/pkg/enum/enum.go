@@ -11,3 +11,20 @@ const (
 	AuthModel    BasicInformation = "authModel"
 	AuthMqlModel BasicInformation = "authMqlModel"
 )
+
+type TaskStatus string
+
+const (
+	TaskStatusFailed  TaskStatus = "failed"  //　失败的
+	TaskStatusWait    TaskStatus = "wait"    // 等待执行
+	TaskStatusRunning TaskStatus = "running" // 运行中
+	TaskStatusPassed  TaskStatus = "passed"  // 通过
+)
+
+type TaskStage string
+
+const (
+	TaskStageBuild  TaskStage = "build"
+	TaskStageTest   TaskStage = "test"
+	TaskStageDeploy TaskStage = "deploy"
+)

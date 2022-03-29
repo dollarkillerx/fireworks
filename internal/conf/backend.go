@@ -2,7 +2,7 @@ package conf
 
 import cfg "github.com/dollarkillerx/common/pkg/config"
 
-type BackendConfig struct {
+type backendConfig struct {
 	ServerAddr string
 
 	ListenAddr     string
@@ -11,12 +11,20 @@ type BackendConfig struct {
 	PostgresConfig cfg.PostgresConfiguration
 }
 
-func InitBackendConfig(configName string, configPaths []string) (*BackendConfig, error) {
-	var agentConfig BackendConfig
+var backendConfigInternal *backendConfig
+
+func InitBackendConfig(configName string, configPaths []string) error {
+	var agentConfig backendConfig
 	err := cfg.InitConfiguration(configName, configPaths, &agentConfig)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &agentConfig, err
+	backendConfigInternal = &agentConfig
+
+	return err
+}
+
+func GetBackendConfig() *backendConfig {
+	return backendConfigInternal
 }

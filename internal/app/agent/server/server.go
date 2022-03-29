@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dollarkillerx/fireworks/internal/utils"
 	"io/ioutil"
 	"log"
 	"os"
@@ -14,7 +15,6 @@ import (
 
 	"github.com/dollarkillerx/fireworks/internal/conf"
 	"github.com/dollarkillerx/fireworks/internal/pkg/models"
-	"github.com/dollarkillerx/fireworks/internal/pkg/utils"
 	"github.com/dollarkillerx/processes"
 	"github.com/dollarkillerx/urllib"
 )

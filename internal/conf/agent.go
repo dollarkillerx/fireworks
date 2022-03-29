@@ -1,6 +1,8 @@
 package conf
 
-import cfg "github.com/dollarkillerx/common/pkg/config"
+import (
+	cfg "github.com/dollarkillerx/common/pkg/config"
+)
 
 type AgentConfig struct {
 	BackendAddr string

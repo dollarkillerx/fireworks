@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package rpc.agent;
+
+option go_package = "rpc/agent";
+
+//import "google/protobuf/wrappers.proto";
+//import "google/protobuf/empty.proto";
+
+service Agent {
+
+}

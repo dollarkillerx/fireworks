@@ -2,11 +2,10 @@ package test
 
 import (
 	"fmt"
+	"github.com/dollarkillerx/fireworks/internal/utils"
 	"github.com/dollarkillerx/processes"
 	"os"
 	"testing"
-
-	"github.com/dollarkillerx/fireworks/internal/pkg/utils"
 )
 
 func TestDir(t *testing.T) {
