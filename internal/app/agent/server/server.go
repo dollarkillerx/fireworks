@@ -82,6 +82,7 @@ func (a *AgentServer) deploy(agent models.Agent) {
 		log.Println(err)
 		return
 	}
+
 	err = a.download(path.Join(agent.TaskName, "images"), agent.DockerImages)
 	if err != nil {
 		log.Println(err)
