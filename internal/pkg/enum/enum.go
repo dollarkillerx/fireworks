@@ -28,3 +28,11 @@ const (
 	TaskStageTest   TaskStage = "test"
 	TaskStageDeploy TaskStage = "deploy"
 )
+
+type TaskAction string
+
+const (
+	TaskActionPush  TaskAction = "push"
+	TaskActionTag   TaskStage  = "tag"
+	TaskActionMerge TaskStage  = "merge"
+)
