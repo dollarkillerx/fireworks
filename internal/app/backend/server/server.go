@@ -28,5 +28,5 @@ func (b *Backend) Run() error {
 	}
 	b.router()
 
-	return nil
+	return b.app.Run(conf.GetBackendConfig().ListenAddr)
 }

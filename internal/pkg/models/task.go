@@ -18,7 +18,7 @@ type Task struct {
 	Name        string `gorm:"type:varchar(600);unique" json:"name"` // task name
 	Token       string `gorm:"type:varchar(600);index" json:"token"` // token
 	Description string `gorm:"type:text" json:"description"`
-	Disabled    bool   `gorm:"type:index" json:"disabled"` //　禁用
+	Disabled    bool   `gorm:"index" json:"disabled"` //　禁用
 }
 
 // Subtasks 子任务
@@ -31,8 +31,8 @@ type Subtasks struct {
 	Action      enum.TaskAction `gorm:"type:varchar(600);index" json:"action"`   // action
 	Instruction string          `gorm:"type:text" json:"instruction"`            // 指令
 	Description string          `gorm:"type:text" json:"description"`
-	Payload     string          `gorm:"type:text" json:"payload"`   // git payload
-	Disabled    bool            `gorm:"type:index" json:"disabled"` //　禁用
+	Payload     string          `gorm:"type:text" json:"payload"` // git payload
+	Disabled    bool            `gorm:"index" json:"disabled"`    //　禁用
 
 	LogID    string        `json:"log_id" gorm:"-"`    // 其他字段使用
 	TaskType enum.TaskType `gorm:"-" json:"task_type"` // 其他字段使用
