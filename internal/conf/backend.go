@@ -5,10 +5,17 @@ import cfg "github.com/dollarkillerx/common/pkg/config"
 type backendConfig struct {
 	ServerAddr string
 
-	ListenAddr     string
-	Debug          bool
-	JWTToken       string
-	PostgresConfig cfg.PostgresConfiguration
+	ListenAddr         string
+	Debug              bool
+	JWTToken           string
+	BasicAdministrator Account
+	PostgresConfig     cfg.PostgresConfiguration
+}
+
+type Account struct {
+	Email    string
+	Name     string
+	Password string
 }
 
 var backendConfigInternal *backendConfig

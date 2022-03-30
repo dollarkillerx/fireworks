@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/dollarkillerx/fireworks/internal/app/backend/storage/base"
 	"log"
 	"strings"
 
@@ -27,11 +28,12 @@ func init() {
 func main() {
 	log.SetFlags(log.Llongfile | log.LstdFlags)
 
-	conf, err := conf.InitBackendConfig(configFilename, strings.Split(configDirs, ","))
+	err := conf.InitBackendConfig(configFilename, strings.Split(configDirs, ","))
 	if err != nil {
 		log.Fatalln(err)
 	}
-	backend := server.NewBackend(conf)
+
+	backend := server.NewBackend(base.NewBase())
 	if err := backend.Run(); err != nil {
 		log.Fatalln(err)
 	}

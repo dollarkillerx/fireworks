@@ -24,13 +24,31 @@ func (b *Base) CreateTask(name string, description string) error {
 }
 
 func (b *Base) GetTasks() (tasks []models.Task, err error) {
-	err = b.db.Model(&models.Task{}).Find(&tasks).Error
+	err = b.db.Model(&models.Task{}).Order("updated_at desc").Find(&tasks).Error
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
 	return
+}
+
+func (b *Base) DisabledTask(taskID string) error {
+	var task models.Task
+	err := b.db.Model(&models.Task{}).Where("id = ?", taskID).First(&task).Error
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	err = b.db.Model(&models.Task{}).Where("id = ?", taskID).
+		Update("disabled", !task.Disabled).Error
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
 func (b *Base) UpdateTask(taskID string, name string, token string, description string) error {
@@ -120,7 +138,7 @@ func (b *Base) DelSubtasks(subtasksID string) error {
 }
 
 func (b *Base) GetSubtasks(taskID string) (subs []models.Subtasks, err error) {
-	err = b.db.Model(&models.Subtasks{}).Where("task_id = ?", taskID).Find(&subs).Error
+	err = b.db.Model(&models.Subtasks{}).Where("task_id = ?", taskID).Order("updated_at desc").Find(&subs).Error
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -129,13 +147,28 @@ func (b *Base) GetSubtasks(taskID string) (subs []models.Subtasks, err error) {
 	return
 }
 
-func (b *Base) CreateTaskLog(subtasksID string) (id string, err error) {
+func (b *Base) UpdateSubtasks(subtaskID string, name string, instruction string, description string) error {
+	err := b.db.Model(&models.Subtasks{}).Where("id = ?", subtaskID).Updates(&models.Subtasks{
+		Name:        name,
+		Instruction: instruction,
+		Description: description,
+	}).Error
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func (b *Base) CreateTaskLog(subtasksID string, taskType enum.TaskType) (id string, err error) {
 	id = utils.GenerateID()
 	err = b.db.Model(&models.TaskLog{}).Create(&models.TaskLog{
 		BaseModel:  models.BaseModel{ID: id},
 		SubtasksID: subtasksID,
 		TaskStage:  enum.TaskStageBuild,
 		TaskStatus: enum.TaskStatusWait,
+		TaskType:   taskType,
 	}).Error
 	if err != nil {
 		log.Println(err)

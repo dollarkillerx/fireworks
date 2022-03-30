@@ -7,6 +7,12 @@ type WebLogin struct {
 	Password string `json:"password" form:"password" binding:"required"`
 }
 
+type CreateUser struct {
+	Email    string `json:"email" form:"email" binding:"required"`
+	Name     string `json:"name" form:"name" binding:"required"`
+	Password string `json:"password" form:"password" binding:"required"`
+}
+
 type AuthModel struct {
 	Email string    `json:"email" validate:"required"`
 	Name  string    `json:"name" validate:"required"`

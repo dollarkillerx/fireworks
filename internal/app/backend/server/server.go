@@ -1,30 +1,25 @@
 package server
 
 import (
+	"github.com/dollarkillerx/fireworks/internal/app/backend/storage"
 	"github.com/dollarkillerx/fireworks/internal/conf"
-	"github.com/dollarkillerx/fireworks/internal/pkg/models"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type Backend struct {
-	conf *conf.BackendConfig
-	app  *gin.Engine
-	db   *gorm.DB
+	app *gin.Engine
+	db  storage.Interface
 }
 
-func NewBackend(conf *conf.BackendConfig, db *gorm.DB) *Backend {
-	db.AutoMigrate(&models.User{})
+func NewBackend(db storage.Interface) *Backend {
 	return &Backend{
-		conf: conf,
-		db:   db,
-		app:  gin.New(),
+		db:  db,
+		app: gin.New(),
 	}
 }
 
 func (b *Backend) Run() error {
-	b.app.Use(gin.Recovery())
-	if b.conf.Debug {
+	if conf.GetBackendConfig().Debug {
 		b.app.Use(gin.Logger())
 	}
 	b.router()

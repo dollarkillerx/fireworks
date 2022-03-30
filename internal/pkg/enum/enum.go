@@ -21,6 +21,14 @@ const (
 	TaskStatusPassed  TaskStatus = "passed"  // 通过
 )
 
+type TaskType string
+
+const (
+	TaskTypeDeploy TaskType = "deploy" //　部署任务
+	TaskTypeStop   TaskType = "stop"   //　停止任务
+	TaskTypeReboot TaskType = "reboot" //　重启任务
+)
+
 type TaskStage string
 
 const (
