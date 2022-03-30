@@ -46,6 +46,18 @@ func (b *Backend) registerAgent(ctx *gin.Context) {
 	utils.Return(ctx, gin.H{})
 }
 
+func (b *Backend) recieveTask(ctx *gin.Context) {
+	var add request.AgentID
+	err := ctx.ShouldBindJSON(&add)
+	if err != nil {
+		utils.Return(ctx, errs.BadRequest)
+		return
+	}
+
+	tasks := b.taskPool.GetTasks(add.AgentID)
+	ctx.JSON(200, tasks)
+}
+
 func (b *Backend) taskLog(ctx *gin.Context) {
 	var add request.TaskLogUpdate
 	err := ctx.ShouldBindJSON(&add)

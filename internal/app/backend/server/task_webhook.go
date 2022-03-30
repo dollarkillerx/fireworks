@@ -35,6 +35,11 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 		return
 	}
 
+	if task.Disabled {
+		utils.Return(ctx, gin.H{})
+		return
+	}
+
 	subtasks, err := b.db.GetSubtasks(task.ID)
 	if err != nil {
 		log.Println(err)
@@ -44,6 +49,9 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 
 	for _, v := range subtasks {
 		if v.Action == gitlabPayload.ObjectKind {
+			if v.Disabled {
+				continue
+			}
 			switch v.Action {
 			case enum.TaskActionTag:
 				if strings.Contains(gitlabPayload.Ref, v.Branch) {
@@ -54,6 +62,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 						return
 					}
 					v.LogID = taskLog
+					v.TaskType = enum.TaskTypeDeploy
 					b.taskPool.AddTask(v.AgentID, v)
 				}
 			case enum.TaskActionPush:
@@ -65,6 +74,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 						return
 					}
 					v.LogID = taskLog
+					v.TaskType = enum.TaskTypeDeploy
 					b.taskPool.AddTask(v.AgentID, v)
 				}
 			case enum.TaskActionMerge:
@@ -79,6 +89,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 						return
 					}
 					v.LogID = taskLog
+					v.TaskType = enum.TaskTypeDeploy
 					b.taskPool.AddTask(v.AgentID, v)
 				}
 			}

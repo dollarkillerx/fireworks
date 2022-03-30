@@ -35,6 +35,8 @@ const (
 	TaskStageBuild  TaskStage = "build"
 	TaskStageTest   TaskStage = "test"
 	TaskStageDeploy TaskStage = "deploy"
+	TaskStageStop   TaskStage = "stop"
+	TaskStageReboot TaskStage = "reboot"
 )
 
 type TaskAction string

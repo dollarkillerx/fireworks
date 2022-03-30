@@ -27,7 +27,6 @@ type CreateSubtask struct {
 
 type UpdateSubtask struct {
 	SubtaskID   string `json:"subtask_id" form:"subtask_id" binding:"required"`
-	Name        string `json:"name" binding:"required"`
 	Instruction string `json:"instruction" binding:"required"` // 指令
 	Description string `json:"description"`
 }

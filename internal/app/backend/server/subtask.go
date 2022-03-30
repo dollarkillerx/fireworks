@@ -114,7 +114,7 @@ func (b *Backend) updateSubtask(ctx *gin.Context) {
 		return
 	}
 
-	err = b.db.UpdateSubtasks(subtask.SubtaskID, subtask.Name, subtask.Instruction, subtask.Description)
+	err = b.db.UpdateSubtasks(subtask.SubtaskID, subtask.Instruction, subtask.Description)
 	if err != nil {
 		log.Println(err)
 		utils.Return(ctx, errs.SqlSystemError)
@@ -147,6 +147,7 @@ func (b *Backend) rebootSubtask(ctx *gin.Context) {
 	}
 
 	id.LogID = taskLog
+	id.TaskType = enum.TaskTypeReboot
 	b.taskPool.AddTask(id.AgentID, *id)
 
 	utils.Return(ctx, gin.H{})
@@ -175,6 +176,7 @@ func (b *Backend) stopSubtask(ctx *gin.Context) {
 	}
 
 	id.LogID = taskLog
+	id.TaskType = enum.TaskTypeStop
 	b.taskPool.AddTask(id.AgentID, *id)
 
 	utils.Return(ctx, gin.H{})

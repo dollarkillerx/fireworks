@@ -56,6 +56,7 @@ func (b *Backend) router() {
 	agent := b.app.Group("/agent", b.agentAuth)
 	{
 		agent.POST("/register", b.registerAgent)
+		agent.POST("/recieve_task", b.recieveTask)
 		agent.POST("/task_log", b.taskLog)
 	}
 

@@ -5,8 +5,13 @@ import (
 )
 
 type AgentConfig struct {
-	BackendAddr string
+	AgentName   string
+	AgentIP     string
 	Token       string
+	Workspace   string
+	Description string
+
+	BackendAddr string
 }
 
 func InitAgentConfig(configName string, configPaths []string) (*AgentConfig, error) {

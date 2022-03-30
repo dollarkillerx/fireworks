@@ -35,7 +35,5 @@ func main() {
 
 	agentServer := server.NewAgentServer(conf)
 	fmt.Println("Fireworks Agent Run ...")
-	if err := agentServer.Run(); err != nil {
-		panic(err)
-	}
+	agentServer.Run()
 }

@@ -157,9 +157,8 @@ func (b *Base) GetSubtasks(taskID string) (subs []models.Subtasks, err error) {
 	return
 }
 
-func (b *Base) UpdateSubtasks(subtaskID string, name string, instruction string, description string) error {
+func (b *Base) UpdateSubtasks(subtaskID string, instruction string, description string) error {
 	err := b.db.Model(&models.Subtasks{}).Where("id = ?", subtaskID).Updates(&models.Subtasks{
-		Name:        name,
 		Instruction: instruction,
 		Description: description,
 	}).Error

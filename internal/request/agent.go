@@ -9,6 +9,10 @@ type AddTask struct {
 	Description string `json:"description"`
 }
 
+type AgentID struct {
+	AgentID string `json:"agent_id" binding:"required"`
+}
+
 type TaskLogUpdate struct {
 	LogID      string          `json:"log_id"`
 	TaskStatus enum.TaskStatus `json:"task_status"`

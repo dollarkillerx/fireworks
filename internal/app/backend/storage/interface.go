@@ -37,7 +37,7 @@ type task interface {
 	GetSubtasksBySubtasksID(subtaskID string) (*models.Subtasks, error)
 	DisabledSubtasks(subtaskID string) error
 	DelSubtasks(subtaskID string) error
-	UpdateSubtasks(subtaskID string, name string, instruction string, description string) error
+	UpdateSubtasks(subtaskID string, instruction string, description string) error
 
 	CreateTaskLog(subtasksID string, taskType enum.TaskType) (id string, err error)
 	UpdateTaskLog(logID string, taskStatus enum.TaskStatus, taskStage enum.TaskStage, logText string) error

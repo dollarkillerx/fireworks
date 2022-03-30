@@ -5,6 +5,7 @@ import (
 	"github.com/dollarkillerx/fireworks/internal/utils"
 	"github.com/dollarkillerx/processes"
 	"os"
+	"path"
 	"testing"
 )
 
@@ -90,6 +91,28 @@ func TestZip(t *testing.T) {
 
 	os.MkdirAll("data", 00755)
 	err = utils.DeCompress("data.zip", "data")
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestPPx(t *testing.T) {
+	cmd := processes.NewExecLinux()
+	_, err := cmd.Exec("cd /home/wangy/workspace/2022/fireworks/test")
+	if err != nil {
+		panic(err)
+		return
+	}
+
+	path2, err := cmd.Exec("pwd")
+	if err != nil {
+		return
+	}
+	fmt.Println(path2)
+	path2 = path.Join(path2, "xxsadsa", "asdsadsa")
+	fmt.Println(path2)
+
+	err = os.MkdirAll(path2, 00777)
 	if err != nil {
 		panic(err)
 	}
