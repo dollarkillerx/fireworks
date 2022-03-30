@@ -33,8 +33,7 @@ func (a *AgentServer) Run() {
 
 func (a *AgentServer) heartbeat() {
 	for {
-		time.Sleep(time.Second * 4)
-		respCode, resp, err := urllib.Post("%s/agent/register").
+		respCode, resp, err := urllib.Post(fmt.Sprintf("%s/agent/register", a.conf.BackendAddr)).
 			SetHeader("token", a.conf.Token).SetJsonObject(request.AddTask{
 			AgentName:   a.conf.AgentName,
 			AgentUrl:    a.conf.AgentIP,
@@ -49,17 +48,19 @@ func (a *AgentServer) heartbeat() {
 		if respCode != 200 {
 			log.Println(string(resp))
 		}
+
+		time.Sleep(time.Second * 4)
 	}
 }
 
 func (a *AgentServer) performTasks() {
 	for {
-		time.Sleep(time.Second)
 		err := a.performTaskCore()
 		if err != nil {
 			log.Println(err)
-			return
+			continue
 		}
+		time.Sleep(time.Second)
 	}
 }
 
@@ -71,7 +72,7 @@ func (a *AgentServer) performTaskCore() (err error) {
 	}()
 
 	var sub []models.Subtasks
-	err = urllib.Post("/agent/recieve_task").SetHeader("token", a.conf.Token).
+	err = urllib.Post(fmt.Sprintf("%s/agent/recieve_task", a.conf.BackendAddr)).SetHeader("token", a.conf.Token).
 		SetJsonObject(request.AgentID{AgentID: a.conf.AgentName}).FromJson(&sub)
 	if err != nil {
 		log.Println(err)
@@ -193,7 +194,7 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 }
 
 func (a *AgentServer) logs(logID string, taskStatus enum.TaskStatus, taskStage enum.TaskStage, logText string) {
-	httpCode, resp, err := urllib.Post("/agent/task_log").SetHeader("token", a.conf.Token).
+	httpCode, resp, err := urllib.Post(fmt.Sprintf("%s/agent/task_log", a.conf.BackendAddr)).SetHeader("token", a.conf.Token).
 		SetJsonObject(request.TaskLogUpdate{
 			LogID:      logID,
 			TaskStage:  taskStage,

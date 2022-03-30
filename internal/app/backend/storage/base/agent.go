@@ -51,7 +51,7 @@ func (b *Base) AddAgent(agentName string, agentUrl string, workspace string, des
 }
 
 func (b *Base) ListAgent() (agent []models.Agent, err error) {
-	err = b.db.Model(&models.Agent{}).Find(&agent).Error
+	err = b.db.Model(&models.Agent{}).Order("updated_at desc").Find(&agent).Error
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -60,6 +60,7 @@ func (b *Base) ListAgent() (agent []models.Agent, err error) {
 	for i := range agent {
 		if agent[i].Expired > time.Now().Unix() {
 			agent[i].Live = true
+			agent[i].LiveTime = agent[i].UpdatedAt.Format("2006-01-02 15:04:05")
 		}
 	}
 

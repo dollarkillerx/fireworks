@@ -7,5 +7,7 @@ type Agent struct {
 	Workspace   string `gorm:"type:text" json:"workspace"`
 	Description string `gorm:"type:text" json:"description"`
 	Expired     int64  `gorm:"index" json:"expired"`
-	Live        bool   `json:"live" gorm:"-"` // 是否存活
+
+	Live     bool   `json:"live" gorm:"-"`      // 是否存活
+	LiveTime string `json:"live_time" gorm:"-"` // 最近在线时间
 }

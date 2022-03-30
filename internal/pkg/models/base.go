@@ -6,8 +6,8 @@ import (
 )
 
 type BaseModel struct {
-	ID        string         `gorm:"primarykey"`
-	CreatedAt time.Time      `gorm:"index"`
+	ID        string         `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `gorm:"index" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"index" json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }

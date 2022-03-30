@@ -8,6 +8,7 @@ import (
 	"github.com/dollarkillerx/fireworks/internal/app/backend/server"
 	"github.com/dollarkillerx/fireworks/internal/app/backend/storage/base"
 	"github.com/dollarkillerx/fireworks/internal/conf"
+	"github.com/dollarkillerx/fireworks/internal/utils"
 )
 
 var configFilename string
@@ -32,6 +33,8 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	utils.InitJWT()
 
 	backend := server.NewBackend(base.NewBase())
 	if err := backend.Run(); err != nil {
