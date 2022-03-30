@@ -13,7 +13,7 @@ func (b *Backend) router() {
 		context.Redirect(302, "/")
 	})
 
-	b.app.POST("/api/web/login", b.login)
+	b.app.POST("/api/web/v1/login", b.login)
 	v1Api := b.app.Group("/api/web/v1", middleware.Auth())
 	{
 		// user
