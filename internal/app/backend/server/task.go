@@ -46,7 +46,7 @@ func (b *Backend) disabledTask(ctx *gin.Context) {
 		return
 	}
 
-	err = b.db.DisabledSubtasks(task.TaskID)
+	err = b.db.DisabledTask(task.TaskID)
 	if err != nil {
 		log.Println(err)
 		utils.Return(ctx, errs.SqlSystemError)

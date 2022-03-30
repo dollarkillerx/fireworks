@@ -26,7 +26,7 @@ func (b *Backend) router() {
 
 		task := v1Api.Group("/task")
 		{
-			task.GET("/", b.tasks)
+			task.GET("index", b.tasks)
 			task.POST("create", b.createTask)
 			task.POST("disabled", b.disabledTask)
 			task.POST("delete", b.deleteTask)
@@ -36,7 +36,7 @@ func (b *Backend) router() {
 
 		subtask := v1Api.Group("/subtask")
 		{
-			subtask.GET("/", b.subtasks)
+			subtask.GET("index", b.subtasks)
 			subtask.POST("create", b.createSubtask)
 			subtask.POST("disabled", b.disabledSubtask)
 			subtask.POST("delete", b.deleteSubtask)
