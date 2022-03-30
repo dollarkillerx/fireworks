@@ -53,6 +53,12 @@ func (b *Backend) router() {
 		webhook.POST("/task/gitlab", b.gitlabTask)
 	}
 
+	agent := b.app.Group("/agent", b.agentAuth)
+	{
+		agent.POST("/register", b.registerAgent)
+		agent.POST("/task_log", b.taskLog)
+	}
+
 	b.app.GET("/", func(c *gin.Context) {
 		c.Writer.WriteHeader(200)
 		//content, err := ioutil.ReadFile("dist/index.html")

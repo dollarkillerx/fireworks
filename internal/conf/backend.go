@@ -7,6 +7,7 @@ type backendConfig struct {
 
 	ListenAddr         string
 	Debug              bool
+	AgentToken         string
 	JWTToken           string
 	BasicAdministrator Account
 	PostgresConfig     cfg.PostgresConfiguration

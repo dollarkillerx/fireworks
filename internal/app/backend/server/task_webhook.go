@@ -16,7 +16,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 	token := ctx.GetHeader("X-Gitlab-Token")
 	if token == "" {
 		log.Println("gitlabTask error")
-		utils.Return(ctx, errs.LoginFailed)
+		utils.Return(ctx, errs.PleaseSignIn)
 		return
 	}
 
