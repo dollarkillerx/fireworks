@@ -27,12 +27,14 @@ type agent interface {
 type task interface {
 	CreateTask(name string, description string) error
 	GetTasks() ([]models.Task, error)
+	GetTaskByToken(token string) (task *models.Task, err error)
 	DisabledTask(taskID string) error
 	UpdateTask(taskID string, name string, token string, description string) error
 	DelTask(taskID string) error
 
 	CreateSubtasks(taskID string, name string, agentID string, branch string, action enum.TaskAction, instruction string, description string) error
 	GetSubtasks(taskID string) ([]models.Subtasks, error)
+	GetSubtasksBySubtasksID(subtaskID string) (*models.Subtasks, error)
 	DisabledSubtasks(subtaskID string) error
 	DelSubtasks(subtaskID string) error
 	UpdateSubtasks(subtaskID string, name string, instruction string, description string) error

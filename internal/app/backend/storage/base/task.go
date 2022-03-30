@@ -90,6 +90,16 @@ func (b *Base) DelTask(taskID string) (err error) {
 	return nil
 }
 
+func (b *Base) GetTaskByToken(token string) (*models.Task, error) {
+	var task models.Task
+	err := b.db.Model(&models.Task{}).Where("token = ?", token).First(&task).Error
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return &task, nil
+}
+
 func (b *Base) CreateSubtasks(taskID string, name string, agentID string, branch string, action enum.TaskAction, instruction string, description string) error {
 	err := b.db.Model(&models.Subtasks{}).Create(&models.Subtasks{
 		BaseModel:   models.BaseModel{ID: utils.GenerateID()},
@@ -159,6 +169,17 @@ func (b *Base) UpdateSubtasks(subtaskID string, name string, instruction string,
 	}
 
 	return nil
+}
+
+func (b *Base) GetSubtasksBySubtasksID(subtaskID string) (*models.Subtasks, error) {
+	var sub models.Subtasks
+	err := b.db.Model(&models.Subtasks{}).Where("id = ?", subtaskID).First(&sub).Error
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &sub, nil
 }
 
 func (b *Base) CreateTaskLog(subtasksID string, taskType enum.TaskType) (id string, err error) {

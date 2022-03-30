@@ -33,4 +33,15 @@ type Subtasks struct {
 	Description string          `gorm:"type:text" json:"description"`
 	Payload     string          `gorm:"type:text" json:"payload"`   // git payload
 	Disabled    bool            `gorm:"type:index" json:"disabled"` //　禁用
+
+	LogID string `json:"log_id" gorm:"-"` // 其他字段使用
+}
+
+type Instruction struct {
+	Build  []string `json:"build"`
+	Test   []string `json:"test"`
+	Deploy []string `json:"deploy"`
+	Reboot []string `json:"reboot"`
+	Stop   []string `json:"stop"`
+	Delete []string `json:"delete"`
 }

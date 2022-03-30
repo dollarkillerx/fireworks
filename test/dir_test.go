@@ -8,6 +8,13 @@ import (
 	"testing"
 )
 
+func TestP2p(t *testing.T) {
+	p := map[string][]string{}
+	p["aaaa"] = append(p["aaaa"], "asdasd")
+	p["aaaa"] = append(p["aaaa"], "asdasd1")
+	fmt.Println(p)
+}
+
 func TestDir(t *testing.T) {
 	//file, _ := exec.LookPath(os.Args[0])
 	//path, _ := filepath.Abs(file)

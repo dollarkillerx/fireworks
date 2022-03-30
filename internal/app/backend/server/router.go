@@ -41,11 +41,16 @@ func (b *Backend) router() {
 			subtask.POST("disabled", b.disabledSubtask)
 			subtask.POST("delete", b.deleteSubtask)
 			subtask.POST("update", b.updateSubtask)
-			subtask.POST("reboot")
-			subtask.POST("stop")
+			subtask.POST("reboot", b.rebootSubtask)
+			subtask.POST("stop", b.stopSubtask)
 		}
 
 		v1Api.GET("task_logs", b.taskLogs)
+	}
+
+	webhook := b.app.Group("/webhook")
+	{
+		webhook.POST("/task/gitlab", b.gitlabTask)
 	}
 
 	b.app.GET("/", func(c *gin.Context) {
@@ -60,5 +65,4 @@ func (b *Backend) router() {
 		//c.Writer.Header().Add("Accept", "text/html")
 		//c.Writer.Flush()
 	})
-
 }
