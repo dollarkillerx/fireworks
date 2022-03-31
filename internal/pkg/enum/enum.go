@@ -42,7 +42,8 @@ const (
 type TaskAction string
 
 const (
-	TaskActionPush  TaskAction = "push"
-	TaskActionTag   TaskAction = "tag_push"
-	TaskActionMerge TaskAction = "merge_request"
+	TaskActionPush        TaskAction = "push"
+	TaskActionTag         TaskAction = "tag_push"
+	TaskActionMerge       TaskAction = "merge_request"
+	TaskActionPushOrMerge TaskAction = "push_or_merge"
 )

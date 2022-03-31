@@ -92,6 +92,32 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 					v.TaskType = enum.TaskTypeDeploy
 					b.taskPool.AddTask(v.AgentID, v)
 				}
+			case enum.TaskActionPushOrMerge:
+				if gitlabPayload.ObjectAttributes == nil {
+					if fmt.Sprintf("refs/heads/%s", v.Branch) == gitlabPayload.Ref {
+						taskLog, err := b.db.CreateTaskLog(v.ID, enum.TaskTypeDeploy)
+						if err != nil {
+							log.Println(err)
+							utils.Return(ctx, errs.SqlSystemError)
+							return
+						}
+						v.LogID = taskLog
+						v.TaskType = enum.TaskTypeDeploy
+						b.taskPool.AddTask(v.AgentID, v)
+					}
+					continue
+				}
+				if v.Branch == gitlabPayload.ObjectAttributes.TargetBranch {
+					taskLog, err := b.db.CreateTaskLog(v.ID, enum.TaskTypeDeploy)
+					if err != nil {
+						log.Println(err)
+						utils.Return(ctx, errs.SqlSystemError)
+						return
+					}
+					v.LogID = taskLog
+					v.TaskType = enum.TaskTypeDeploy
+					b.taskPool.AddTask(v.AgentID, v)
+				}
 			}
 		}
 	}

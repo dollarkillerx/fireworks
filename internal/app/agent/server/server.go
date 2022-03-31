@@ -136,6 +136,8 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 
 	switch sub.TaskType {
 	case enum.TaskTypeDeploy:
+		var body string
+		body += fmt.Sprintf("build =======\n")
 		// build
 		for _, v := range instruction.Build {
 			r, err := exec.Exec(v)
@@ -145,7 +147,10 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 				return
 			}
 			log.Println(r)
+			body += fmt.Sprintf("%s\n", r)
 		}
+
+		body += fmt.Sprintf("test =======\n")
 		// test
 		for _, v := range instruction.Test {
 			r, err := exec.Exec(v)
@@ -155,7 +160,10 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 				return
 			}
 			log.Println(r)
+			body += fmt.Sprintf("%s\n", r)
 		}
+
+		body += fmt.Sprintf("deploy =======\n")
 		// deploy
 		for _, v := range instruction.Deploy {
 			r, err := exec.Exec(v)
@@ -165,10 +173,13 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 				return
 			}
 			log.Println(r)
+			body += fmt.Sprintf("%s\n", r)
 		}
 
-		a.logs(sub.LogID, enum.TaskStatusPassed, enum.TaskStageDeploy, err.Error())
+		a.logs(sub.LogID, enum.TaskStatusPassed, enum.TaskStageDeploy, body)
 	case enum.TaskTypeReboot:
+		var body string
+		body += fmt.Sprintf("Reboot =======\n")
 		for _, v := range instruction.Reboot {
 			r, err := exec.Exec(v)
 			if err != nil {
@@ -177,9 +188,12 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 				return
 			}
 			log.Println(r)
+			body += fmt.Sprintf("%s\n", r)
 		}
-		a.logs(sub.LogID, enum.TaskStatusPassed, enum.TaskStageReboot, err.Error())
+		a.logs(sub.LogID, enum.TaskStatusPassed, enum.TaskStageReboot, body)
 	case enum.TaskTypeStop:
+		var body string
+		body += fmt.Sprintf("Stop =======\n")
 		for _, v := range instruction.Stop {
 			r, err := exec.Exec(v)
 			if err != nil {
@@ -188,8 +202,9 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 				return
 			}
 			log.Println(r)
+			body += fmt.Sprintf("%s\n", r)
 		}
-		a.logs(sub.LogID, enum.TaskStatusPassed, enum.TaskStageStop, err.Error())
+		a.logs(sub.LogID, enum.TaskStatusPassed, enum.TaskStageStop, body)
 	}
 }
 

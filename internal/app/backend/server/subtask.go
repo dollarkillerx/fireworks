@@ -20,11 +20,26 @@ func (b *Backend) subtasks(ctx *gin.Context) {
 		return
 	}
 
+	agent, err := b.db.ListAgent()
+	if err != nil {
+		log.Println(err)
+		utils.Return(ctx, errs.SqlSystemError)
+		return
+	}
+
 	tasks, err := b.db.GetSubtasks(task.TaskID)
 	if err != nil {
 		log.Println(err)
 		utils.Return(ctx, errs.SqlSystemError)
 		return
+	}
+
+	for i, v := range tasks {
+		for _, vv := range agent {
+			if v.AgentID == vv.ID {
+				tasks[i].AgentName = vv.AgentName
+			}
+		}
 	}
 
 	utils.Return(ctx, tasks)
@@ -45,7 +60,7 @@ func (b *Backend) createSubtask(ctx *gin.Context) {
 		return
 	}
 	if len(instruction.Build) == 0 || len(instruction.Deploy) == 0 {
-		utils.Return(ctx, errs.NewError("400003", "Instruction 解析失败: "+err.Error()))
+		utils.Return(ctx, errs.NewError("400003", "Instruction 填写错误"))
 		return
 	}
 

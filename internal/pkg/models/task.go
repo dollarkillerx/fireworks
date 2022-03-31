@@ -34,8 +34,9 @@ type Subtasks struct {
 	Payload     string          `gorm:"type:text" json:"payload"` // git payload
 	Disabled    bool            `gorm:"index" json:"disabled"`    //　禁用
 
-	LogID    string        `json:"log_id" gorm:"-"`    // 其他字段使用
-	TaskType enum.TaskType `gorm:"-" json:"task_type"` // 其他字段使用
+	LogID     string        `json:"log_id" gorm:"-"`     // 其他字段使用
+	TaskType  enum.TaskType `gorm:"-" json:"task_type"`  // 其他字段使用
+	AgentName string        `gorm:"-" json:"agent_name"` // 其他字段使用
 }
 
 type Instruction struct {

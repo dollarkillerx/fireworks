@@ -60,8 +60,8 @@ func (b *Base) ListAgent() (agent []models.Agent, err error) {
 	for i := range agent {
 		if agent[i].Expired > time.Now().Unix() {
 			agent[i].Live = true
-			agent[i].LiveTime = agent[i].UpdatedAt.Format("2006-01-02 15:04:05")
 		}
+		agent[i].LiveTime = agent[i].UpdatedAt.Format("2006-01-02 15:04:05")
 	}
 
 	return
