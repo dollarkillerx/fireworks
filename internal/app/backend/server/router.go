@@ -52,7 +52,7 @@ func (b *Backend) router() {
 
 	webhook := b.app.Group("/webhook")
 	{
-		webhook.POST("/task/gitlab", b.gitlabTask)
+		webhook.POST("/task", b.webHookTask)
 	}
 
 	agent := b.app.Group("/agent", b.agentAuth)

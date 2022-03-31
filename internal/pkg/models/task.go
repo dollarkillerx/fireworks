@@ -42,6 +42,7 @@ type Subtasks struct {
 	LogID     string        `json:"log_id" gorm:"-"`     // 其他字段使用
 	TaskType  enum.TaskType `gorm:"-" json:"task_type"`  // 其他字段使用
 	AgentName string        `gorm:"-" json:"agent_name"` // 其他字段使用
+	GitAddr   string        `json:"git_addr" gorm:"-"`   // 其他字段使用
 }
 
 type Instruction struct {

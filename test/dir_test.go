@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"github.com/dollarkillerx/fireworks/internal/utils"
 	"github.com/dollarkillerx/processes"
+	"log"
 	"os"
-	"path"
+	"strings"
 	"testing"
 )
 
@@ -98,7 +99,7 @@ func TestZip(t *testing.T) {
 
 func TestPPx(t *testing.T) {
 	cmd := processes.NewExecLinux()
-	_, err := cmd.Exec("cd /home/wangy/workspace/2022/fireworks/test")
+	_, err := cmd.Exec("cd /home/wangy/workspace/2022/fireworks")
 	if err != nil {
 		panic(err)
 		return
@@ -106,14 +107,27 @@ func TestPPx(t *testing.T) {
 
 	path2, err := cmd.Exec("pwd")
 	if err != nil {
+		log.Println(err)
 		return
 	}
-	fmt.Println(path2)
-	path2 = path.Join(path2, "xxsadsa", "asdsadsa")
+
 	fmt.Println(path2)
 
-	err = os.MkdirAll(path2, 00777)
+	exec, err := cmd.Exec("ls -a")
 	if err != nil {
 		panic(err)
+		return
 	}
+
+	fmt.Println(exec)
+
+	fmt.Println(strings.Contains(exec, ".git"))
+
+	//path2 = path.Join(path2, "xxsadsa", "asdsadsa")
+	//fmt.Println(path2)
+	//
+	//err = os.MkdirAll(path2, 00777)
+	//if err != nil {
+	//	panic(err)
+	//}
 }

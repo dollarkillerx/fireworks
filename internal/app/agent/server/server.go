@@ -2,10 +2,12 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/dollarkillerx/fireworks/internal/conf"
@@ -42,6 +44,7 @@ func (a *AgentServer) heartbeat() {
 		}).Byte()
 		if err != nil {
 			log.Println(err)
+			time.Sleep(time.Second * 4)
 			continue
 		}
 
@@ -58,7 +61,6 @@ func (a *AgentServer) performTasks() {
 		err := a.performTaskCore()
 		if err != nil {
 			log.Println(err)
-			continue
 		}
 		time.Sleep(time.Second)
 	}
@@ -89,17 +91,25 @@ func (a *AgentServer) performTaskCore() (err error) {
 func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 	a.logs(sub.LogID, enum.TaskStatusRunning, enum.TaskStageBuild, "")
 	log.Printf("task received task: %s log: %s \n", sub.ID, sub.TaskID)
+
+	if sub.GitAddr == "" {
+		err := errors.New("Subtasks GitAddr is null")
+		log.Println(err)
+		a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
+		return
+	}
+
 	var instruction models.Instruction
 	err := json.Unmarshal([]byte(sub.Instruction), &instruction)
 	if err != nil {
 		err = fmt.Errorf("Instruction 解析失败: " + err.Error())
-		log.Println("Instruction 解析失败: " + err.Error())
+		log.Println(err)
 		a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
 		return
 	}
 	if len(instruction.Build) == 0 || len(instruction.Deploy) == 0 {
 		err = fmt.Errorf("Instruction 解析失败: " + err.Error())
-		log.Println("Instruction 解析失败: " + err.Error())
+		log.Println(err)
 		a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
 		return
 	}
@@ -132,6 +142,29 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 		log.Println(err)
 		a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
 		return
+	}
+
+	ls, err := exec.Exec("ls -a")
+	if err != nil {
+		log.Println(err)
+		a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
+		return
+	}
+
+	if !strings.Contains(ls, ".git") {
+		_, err := exec.Exec(fmt.Sprintf("git clone %s", sub.GitAddr))
+		if err != nil {
+			log.Println(err)
+			a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
+			return
+		}
+	} else {
+		_, err := exec.Exec("git pull")
+		if err != nil {
+			log.Println(err)
+			a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
+			return
+		}
 	}
 
 	switch sub.TaskType {

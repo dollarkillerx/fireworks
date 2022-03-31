@@ -12,14 +12,19 @@ import (
 	"strings"
 )
 
-func (b *Backend) gitlabTask(ctx *gin.Context) {
+func (b *Backend) webHookTask(ctx *gin.Context) {
 	token := ctx.GetHeader("X-Gitlab-Token")
-	if token == "" {
-		log.Println("gitlabTask error")
-		utils.Return(ctx, errs.PleaseSignIn)
+	if token != "" {
+		b.gitlabTask(ctx, token)
 		return
 	}
 
+	log.Println("未知请求")
+	utils.Return(ctx, errs.PleaseSignIn)
+	return
+}
+
+func (b *Backend) gitlabTask(ctx *gin.Context, token string) {
 	var gitlabPayload git_models.GitlabWebHook
 	err := ctx.ShouldBindJSON(&gitlabPayload)
 	if err != nil {
@@ -63,6 +68,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 					}
 					v.LogID = taskLog
 					v.TaskType = enum.TaskTypeDeploy
+					v.GitAddr = gitlabPayload.Project.GitSshUrl
 					b.taskPool.AddTask(v.AgentID, v)
 				}
 			case enum.TaskActionPush:
@@ -75,6 +81,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 					}
 					v.LogID = taskLog
 					v.TaskType = enum.TaskTypeDeploy
+					v.GitAddr = gitlabPayload.Project.GitSshUrl
 					b.taskPool.AddTask(v.AgentID, v)
 				}
 			case enum.TaskActionMerge:
@@ -90,6 +97,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 					}
 					v.LogID = taskLog
 					v.TaskType = enum.TaskTypeDeploy
+					v.GitAddr = gitlabPayload.Project.GitSshUrl
 					b.taskPool.AddTask(v.AgentID, v)
 				}
 			case enum.TaskActionPushOrMerge:
@@ -103,6 +111,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 						}
 						v.LogID = taskLog
 						v.TaskType = enum.TaskTypeDeploy
+						v.GitAddr = gitlabPayload.Project.GitSshUrl
 						b.taskPool.AddTask(v.AgentID, v)
 					}
 					continue
@@ -116,6 +125,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context) {
 					}
 					v.LogID = taskLog
 					v.TaskType = enum.TaskTypeDeploy
+					v.GitAddr = gitlabPayload.Project.GitSshUrl
 					b.taskPool.AddTask(v.AgentID, v)
 				}
 			}
