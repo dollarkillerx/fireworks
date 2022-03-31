@@ -3,6 +3,8 @@ package server
 import (
 	"github.com/dollarkillerx/fireworks/internal/app/backend/middleware"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
+	"net/http"
 )
 
 func (b *Backend) router() {
@@ -62,14 +64,21 @@ func (b *Backend) router() {
 
 	b.app.GET("/", func(c *gin.Context) {
 		c.Writer.WriteHeader(200)
-		//content, err := ioutil.ReadFile("dist/index.html")
-		//if err != nil {
-		//	c.Writer.WriteHeader(404)
-		//	c.Writer.WriteString("Not Found")
-		//	return
-		//}
-		//_, _ = c.Writer.Write(content)
-		//c.Writer.Header().Add("Accept", "text/html")
-		//c.Writer.Flush()
+		content, err := ioutil.ReadFile("dist/index.html")
+		if err != nil {
+			c.Writer.WriteHeader(404)
+			c.Writer.WriteString("Not Found")
+			return
+		}
+		_, _ = c.Writer.Write(content)
+		c.Writer.Header().Add("Accept", "text/html")
+		c.Writer.Flush()
 	})
+
+	b.app.StaticFile("go-logo-blue.svg", "./dist/go-logo-blue.svg")
+	b.app.StaticFile("cicd-pipeline.png", "./dist/cicd-pipeline.png")
+	b.app.StaticFS("/static/css", http.Dir("./dist/static/css"))
+	b.app.StaticFS("/static/fonts", http.Dir("./dist/static/fonts"))
+	b.app.StaticFS("/static/img", http.Dir("./dist/static/img"))
+	b.app.StaticFS("/static/js", http.Dir("./dist/static/js"))
 }

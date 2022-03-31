@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  fireworks:
+    image: dollarkiller/fireworks:latest
+    container_name: fireworks
+    restart: always
+    volumes:
+      - ./configs/:/app/configs
+    ports:
+      - 8574:8574
