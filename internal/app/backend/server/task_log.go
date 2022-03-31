@@ -10,14 +10,21 @@ import (
 )
 
 func (b *Backend) taskLogs(ctx *gin.Context) {
-	var subtask request.Subtask
-	err := ctx.ShouldBindJSON(&subtask)
+	var logID request.TaskLogID
+	err := ctx.ShouldBindQuery(&logID)
 	if err != nil {
 		utils.Return(ctx, errs.BadRequest)
 		return
 	}
 
-	taskLogs, err := b.db.GetTaskLog(subtask.SubtaskID)
+	if logID.TaskID == "undefined" {
+		logID.TaskID = ""
+	}
+	if logID.SubtaskID == "undefined" {
+		logID.SubtaskID = ""
+	}
+
+	taskLogs, err := b.db.GetTaskLog(logID.TaskID, logID.SubtaskID)
 	if err != nil {
 		log.Println(err)
 		utils.Return(ctx, errs.SqlSystemError)

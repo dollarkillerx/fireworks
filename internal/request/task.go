@@ -15,6 +15,11 @@ type Subtask struct {
 	SubtaskID string `json:"subtask_id" form:"subtask_id" binding:"required"`
 }
 
+type TaskLogID struct {
+	TaskID    string `json:"task_id" form:"task_id"`
+	SubtaskID string `json:"subtask_id" form:"subtask_id"`
+}
+
 type CreateSubtask struct {
 	TaskID      string          `json:"task_id" binding:"required"`
 	Name        string          `json:"name" binding:"required"`

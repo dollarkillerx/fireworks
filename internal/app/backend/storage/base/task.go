@@ -6,6 +6,7 @@ import (
 	"github.com/dollarkillerx/fireworks/internal/utils"
 
 	"log"
+	"time"
 )
 
 func (b *Base) CreateTask(name string, description string) error {
@@ -31,6 +32,17 @@ func (b *Base) GetTasks() (tasks []models.Task, err error) {
 	}
 
 	return
+}
+
+func (b *Base) GetTaskByID(taskID string) (*models.Task, error) {
+	var task models.Task
+	err := b.db.Model(&models.Task{}).Where("id = ?", taskID).First(&task).Error
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &task, nil
 }
 
 func (b *Base) DisabledTask(taskID string) error {
@@ -183,12 +195,26 @@ func (b *Base) GetSubtasksBySubtasksID(subtaskID string) (*models.Subtasks, erro
 
 func (b *Base) CreateTaskLog(subtasksID string, taskType enum.TaskType) (id string, err error) {
 	id = utils.GenerateID()
+
+	subtasks, err := b.GetSubtasksBySubtasksID(subtasksID)
+	if err != nil {
+		return "", err
+	}
+
+	task, err := b.GetTaskByID(subtasks.TaskID)
+	if err != nil {
+		return "", err
+	}
+
 	err = b.db.Model(&models.TaskLog{}).Create(&models.TaskLog{
-		BaseModel:  models.BaseModel{ID: id},
-		SubtasksID: subtasksID,
-		TaskStage:  enum.TaskStageBuild,
-		TaskStatus: enum.TaskStatusWait,
-		TaskType:   taskType,
+		BaseModel:   models.BaseModel{ID: id},
+		TaskID:      subtasks.TaskID,
+		TaskName:    task.Name,
+		SubtasksID:  subtasksID,
+		SubtaskName: subtasks.Name,
+		TaskStage:   enum.TaskStageBuild,
+		TaskStatus:  enum.TaskStatusWait,
+		TaskType:    taskType,
 	}).Error
 	if err != nil {
 		log.Println(err)
@@ -213,13 +239,44 @@ func (b *Base) UpdateTaskLog(logID string, taskStatus enum.TaskStatus, taskStage
 	return nil
 }
 
-func (b *Base) GetTaskLog(subtasksID string) (logs []models.TaskLog, err error) {
-	err = b.db.Model(&models.TaskLog{}).
-		Where("subtasks_id = ?", subtasksID).Order("updated_at desc").Limit(13).Find(&logs).Error
+func (b *Base) GetTaskLog(taskID string, subtasksID string) (logs []models.TaskLog, err error) {
+	sql := b.db.Model(&models.TaskLog{})
+	if taskID != "" {
+		sql = sql.Where("task_id = ?", taskID)
+	}
+	if subtasksID != "" {
+		sql = sql.Where("subtasks_id = ?", subtasksID)
+	}
+	err = sql.Order("updated_at desc").Limit(20).Find(&logs).Error
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
+	for i := range logs {
+		logs[i].DisplayTime = logs[i].UpdatedAt.Format("2006-01-02 15:04:05")
+	}
+
 	return
+}
+
+// updateTaskOldLogs 内部调用 设置过期服务
+func (b *Base) updateTaskOldLogs() {
+	var logs []models.TaskLog
+	err := b.db.Model(&models.TaskLog{}).Where("task_status in (?)", []interface{}{enum.TaskStatusWait, enum.TaskStatusRunning}).Find(&logs).Error
+	if err != nil {
+		log.Println(err)
+	}
+
+	for _, v := range logs {
+		if v.CreatedAt.Add(time.Minute*60).Unix() < time.Now().Unix() {
+			err := b.db.Model(&models.TaskLog{}).Where("id = ?", v.ID).Updates(&models.TaskLog{
+				TaskStatus: enum.TaskStatusFailed,
+				Log:        "time out",
+			}).Error
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	}
 }

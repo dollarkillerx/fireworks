@@ -27,6 +27,7 @@ type agent interface {
 type task interface {
 	CreateTask(name string, description string) error
 	GetTasks() ([]models.Task, error)
+	GetTaskByID(taskID string) (*models.Task, error)
 	GetTaskByToken(token string) (task *models.Task, err error)
 	DisabledTask(taskID string) error
 	UpdateTask(taskID string, name string, token string, description string) error
@@ -41,5 +42,5 @@ type task interface {
 
 	CreateTaskLog(subtasksID string, taskType enum.TaskType) (id string, err error)
 	UpdateTaskLog(logID string, taskStatus enum.TaskStatus, taskStage enum.TaskStage, logText string) error
-	GetTaskLog(subtasksID string) (logs []models.TaskLog, err error)
+	GetTaskLog(taskID string, subtasksID string) (logs []models.TaskLog, err error)
 }

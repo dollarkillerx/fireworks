@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 
 	"log"
+	"time"
 )
 
 type Base struct {
@@ -47,6 +48,13 @@ func NewBase() storage.Interface {
 			log.Println(err)
 		}
 	}
+
+	go func() {
+		for {
+			base.updateTaskOldLogs()
+			time.Sleep(time.Minute * 10)
+		}
+	}()
 
 	return base
 }
