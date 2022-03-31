@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"github.com/dollarkillerx/fireworks/internal/pkg/enum"
 	"github.com/dollarkillerx/fireworks/internal/pkg/errs"
 	"github.com/dollarkillerx/fireworks/internal/pkg/git_models"
@@ -33,6 +34,15 @@ func (b *Backend) gitlabTask(ctx *gin.Context, token string) {
 		return
 	}
 
+	fmt.Println("=========gitlab payload: ")
+	marshal, err := json.Marshal(gitlabPayload)
+	if err != nil {
+		panic(err)
+	}
+	log.Println(string(marshal))
+	fmt.Println("=========token: ")
+	fmt.Println(token)
+
 	task, err := b.db.GetTaskByToken(token)
 	if err != nil {
 		log.Println("GetTaskByToken 不存在的任务: ", err.Error())
@@ -53,7 +63,7 @@ func (b *Backend) gitlabTask(ctx *gin.Context, token string) {
 	}
 
 	for _, v := range subtasks {
-		if v.Action == gitlabPayload.ObjectKind {
+		if v.Action == gitlabPayload.ObjectKind || (v.Action == enum.TaskActionPushOrMerge && gitlabPayload.ObjectKind == "push") || (v.Action == enum.TaskActionPushOrMerge && gitlabPayload.ObjectKind == "merge_request") {
 			if v.Disabled {
 				continue
 			}
@@ -113,6 +123,10 @@ func (b *Backend) gitlabTask(ctx *gin.Context, token string) {
 						v.TaskType = enum.TaskTypeDeploy
 						v.GitAddr = gitlabPayload.Project.GitSshUrl
 						b.taskPool.AddTask(v.AgentID, v)
+						log.Println("添加成功")
+					} else {
+						log.Println(fmt.Sprintf("refs/heads/%s", v.Branch))
+						log.Println(fmt.Sprintf(gitlabPayload.Ref))
 					}
 					continue
 				}
