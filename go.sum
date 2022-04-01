@@ -109,12 +109,10 @@ github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZm
 github.com/dgryski/trifles v0.0.0-20200323201526-dd97f9abfb48/go.mod h1:if7Fbed8SFyPtHLHbg49SI7NAdJiC5WIA09pe59rfAA=
 github.com/dollarkillerx/common v0.0.3 h1:fQ4UxmS7dOzHdMqjMsV+V97foclFQKFDIxmZTVirUaM=
 github.com/dollarkillerx/common v0.0.3/go.mod h1:i78p63/PxmO8YrrzMnr+yWwkFOCG0lFrJz7JEBIL+ck=
-github.com/dollarkillerx/jwt v0.0.3 h1:HUY2NCW80DiRQLqs9zOcurNIDe/brPTkSu0VxhMaPJY=
-github.com/dollarkillerx/jwt v0.0.3/go.mod h1:uCr5rzHgCfUuP5e9pbRNGkuky/juZRdmOLF5zBbBV0s=
 github.com/dollarkillerx/jwt v0.0.4 h1:63de3dg3PmaBDNF2eabHDkpKSr+Wyj4eMXiwV7D8yJ8=
 github.com/dollarkillerx/jwt v0.0.4/go.mod h1:i2Lekf+Qt+y+0XlQ+FhtbE9msU7OWKR8a11lFWJu4EA=
-github.com/dollarkillerx/processes v0.0.4 h1:ZMGjuZRfMQAxOLB0nbOaG3+wn/s5UQZIawXjME6c+O0=
-github.com/dollarkillerx/processes v0.0.4/go.mod h1:LgxcR+R9XlMfSE38MxYyBkV6i8tIaCOz3HBWyV3pGoc=
+github.com/dollarkillerx/processes v0.0.5 h1:YNcvDg3HGeh91QFQin3HGIMO0aWejG0mvKsKggpNOFU=
+github.com/dollarkillerx/processes v0.0.5/go.mod h1:LgxcR+R9XlMfSE38MxYyBkV6i8tIaCOz3HBWyV3pGoc=
 github.com/dollarkillerx/urllib v1.13.16 h1:uBjhLYuRw/Gr2IZkMtWgEzlZfpx/dXPFEaNd1SaAVEY=
 github.com/dollarkillerx/urllib v1.13.16/go.mod h1:PARM2eEF6LGZs+LU1iP0Q8MdtIMadV+APnG9qz7ny8E=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dollarkillerx/fireworks/internal/utils"
 	"log"
 	"os"
 	"path"
@@ -20,11 +21,13 @@ import (
 
 type AgentServer struct {
 	conf *conf.AgentConfig
+	lock *utils.RWLock
 }
 
 func NewAgentServer(conf *conf.AgentConfig) *AgentServer {
 	return &AgentServer{
 		conf: conf,
+		lock: utils.NewRWLock(),
 	}
 }
 
@@ -81,16 +84,20 @@ func (a *AgentServer) performTaskCore() (err error) {
 		return
 	}
 
-	for _, v := range sub {
-		a.performTaskCoreItem(v)
+	for i, v := range sub {
+		a.logs(v.LogID, enum.TaskStatusRunning, enum.TaskStageBuild, "")
+		log.Printf("task received task: %s log: %s \n", v.ID, v.TaskID)
+		idx := i
+
+		go a.performTaskCoreItem(sub[idx])
 	}
 
 	return nil
 }
 
 func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
-	a.logs(sub.LogID, enum.TaskStatusRunning, enum.TaskStageBuild, "")
-	log.Printf("task received task: %s log: %s \n", sub.ID, sub.TaskID)
+	lock := a.lock.Lock(sub.ID)
+	defer lock.Unlock()
 
 	if sub.GitAddr == "" {
 		err := errors.New("Subtasks GitAddr is null")
@@ -114,7 +121,7 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 		return
 	}
 
-	exec := processes.NewExecLinux()
+	exec := processes.NewExecLinuxGen("", "", time.Minute*3)
 	_, err = exec.Exec("cd " + a.conf.Workspace)
 	if err != nil {
 		log.Println(err)
@@ -152,7 +159,13 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 	}
 
 	if !strings.Contains(ls, ".git") {
-		_, err := exec.Exec(fmt.Sprintf("git clone %s", sub.GitAddr))
+		_, err := exec.Exec(fmt.Sprintf("git clone %s ./", sub.GitAddr))
+		if err != nil {
+			log.Println(err)
+			a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
+			return
+		}
+		_, err = exec.Exec(fmt.Sprintf("git checkout %s ", sub.Branch))
 		if err != nil {
 			log.Println(err)
 			a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())

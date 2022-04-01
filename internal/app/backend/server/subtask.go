@@ -147,23 +147,12 @@ func (b *Backend) rebootSubtask(ctx *gin.Context) {
 		return
 	}
 
-	id, err := b.db.GetSubtasksBySubtasksID(subtask.SubtaskID)
-	if err != nil {
-		log.Println(err)
-		utils.Return(ctx, errs.BadRequest)
-		return
-	}
-
-	taskLog, err := b.db.CreateTaskLog(subtask.SubtaskID, enum.TaskTypeReboot)
+	_, err = b.db.CreateTaskLog(subtask.SubtaskID, "", enum.TaskTypeReboot)
 	if err != nil {
 		log.Println(err)
 		utils.Return(ctx, errs.SqlSystemError)
 		return
 	}
-
-	id.LogID = taskLog
-	id.TaskType = enum.TaskTypeReboot
-	b.taskPool.AddTask(id.AgentID, *id)
 
 	utils.Return(ctx, gin.H{})
 }
@@ -176,23 +165,12 @@ func (b *Backend) stopSubtask(ctx *gin.Context) {
 		return
 	}
 
-	id, err := b.db.GetSubtasksBySubtasksID(subtask.SubtaskID)
-	if err != nil {
-		log.Println(err)
-		utils.Return(ctx, errs.BadRequest)
-		return
-	}
-
-	taskLog, err := b.db.CreateTaskLog(subtask.SubtaskID, enum.TaskTypeStop)
+	_, err = b.db.CreateTaskLog(subtask.SubtaskID, "", enum.TaskTypeStop)
 	if err != nil {
 		log.Println(err)
 		utils.Return(ctx, errs.SqlSystemError)
 		return
 	}
-
-	id.LogID = taskLog
-	id.TaskType = enum.TaskTypeStop
-	b.taskPool.AddTask(id.AgentID, *id)
 
 	utils.Return(ctx, gin.H{})
 }

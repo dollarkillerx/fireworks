@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/dollarkillerx/fireworks/internal/app/backend/middleware"
 	"github.com/gin-gonic/gin"
+
 	"io/ioutil"
 	"net/http"
 )

@@ -1,13 +1,13 @@
 package server
 
 import (
-	"encoding/json"
 	"github.com/dollarkillerx/fireworks/internal/pkg/enum"
 	"github.com/dollarkillerx/fireworks/internal/pkg/errs"
 	"github.com/dollarkillerx/fireworks/internal/pkg/git_models"
 	"github.com/dollarkillerx/fireworks/internal/utils"
 	"github.com/gin-gonic/gin"
 
+	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
@@ -62,6 +62,8 @@ func (b *Backend) gitlabTask(ctx *gin.Context, token string) {
 		return
 	}
 
+	gitSsh := gitlabPayload.Project.GitSshUrl
+
 	for _, v := range subtasks {
 		if v.Action == gitlabPayload.ObjectKind || (v.Action == enum.TaskActionPushOrMerge && gitlabPayload.ObjectKind == "push") || (v.Action == enum.TaskActionPushOrMerge && gitlabPayload.ObjectKind == "merge_request") {
 			if v.Disabled {
@@ -70,60 +72,43 @@ func (b *Backend) gitlabTask(ctx *gin.Context, token string) {
 			switch v.Action {
 			case enum.TaskActionTag:
 				if strings.Contains(gitlabPayload.Ref, v.Branch) {
-					taskLog, err := b.db.CreateTaskLog(v.ID, enum.TaskTypeDeploy)
+					_, err := b.db.CreateTaskLog(v.ID, gitSsh, enum.TaskTypeDeploy)
 					if err != nil {
 						log.Println(err)
 						utils.Return(ctx, errs.SqlSystemError)
 						return
 					}
-					v.LogID = taskLog
-					v.TaskType = enum.TaskTypeDeploy
-					v.GitAddr = gitlabPayload.Project.GitSshUrl
-					b.taskPool.AddTask(v.AgentID, v)
 				}
 			case enum.TaskActionPush:
 				if fmt.Sprintf("refs/heads/%s", v.Branch) == gitlabPayload.Ref {
-					taskLog, err := b.db.CreateTaskLog(v.ID, enum.TaskTypeDeploy)
+					_, err := b.db.CreateTaskLog(v.ID, gitSsh, enum.TaskTypeDeploy)
 					if err != nil {
 						log.Println(err)
 						utils.Return(ctx, errs.SqlSystemError)
 						return
 					}
-					v.LogID = taskLog
-					v.TaskType = enum.TaskTypeDeploy
-					v.GitAddr = gitlabPayload.Project.GitSshUrl
-					b.taskPool.AddTask(v.AgentID, v)
 				}
 			case enum.TaskActionMerge:
 				if gitlabPayload.ObjectAttributes == nil {
 					continue
 				}
 				if v.Branch == gitlabPayload.ObjectAttributes.TargetBranch {
-					taskLog, err := b.db.CreateTaskLog(v.ID, enum.TaskTypeDeploy)
+					_, err := b.db.CreateTaskLog(v.ID, gitSsh, enum.TaskTypeDeploy)
 					if err != nil {
 						log.Println(err)
 						utils.Return(ctx, errs.SqlSystemError)
 						return
 					}
-					v.LogID = taskLog
-					v.TaskType = enum.TaskTypeDeploy
-					v.GitAddr = gitlabPayload.Project.GitSshUrl
-					b.taskPool.AddTask(v.AgentID, v)
 				}
 			case enum.TaskActionPushOrMerge:
 				if gitlabPayload.ObjectAttributes == nil {
 					if fmt.Sprintf("refs/heads/%s", v.Branch) == gitlabPayload.Ref {
-						taskLog, err := b.db.CreateTaskLog(v.ID, enum.TaskTypeDeploy)
+						_, err := b.db.CreateTaskLog(v.ID, gitSsh, enum.TaskTypeDeploy)
 						if err != nil {
 							log.Println(err)
 							utils.Return(ctx, errs.SqlSystemError)
 							return
 						}
-						v.LogID = taskLog
-						v.TaskType = enum.TaskTypeDeploy
-						v.GitAddr = gitlabPayload.Project.GitSshUrl
-						b.taskPool.AddTask(v.AgentID, v)
-						log.Println("添加成功")
 					} else {
 						log.Println(fmt.Sprintf("refs/heads/%s", v.Branch))
 						log.Println(fmt.Sprintf(gitlabPayload.Ref))
@@ -131,16 +116,12 @@ func (b *Backend) gitlabTask(ctx *gin.Context, token string) {
 					continue
 				}
 				if v.Branch == gitlabPayload.ObjectAttributes.TargetBranch {
-					taskLog, err := b.db.CreateTaskLog(v.ID, enum.TaskTypeDeploy)
+					_, err := b.db.CreateTaskLog(v.ID, gitSsh, enum.TaskTypeDeploy)
 					if err != nil {
 						log.Println(err)
 						utils.Return(ctx, errs.SqlSystemError)
 						return
 					}
-					v.LogID = taskLog
-					v.TaskType = enum.TaskTypeDeploy
-					v.GitAddr = gitlabPayload.Project.GitSshUrl
-					b.taskPool.AddTask(v.AgentID, v)
 				}
 			}
 		}

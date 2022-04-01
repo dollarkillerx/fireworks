@@ -54,7 +54,13 @@ func (b *Backend) recieveTask(ctx *gin.Context) {
 		return
 	}
 
-	tasks := b.taskPool.GetTasks(add.AgentID)
+	tasks, err := b.db.RecieveTaskByLog(add.AgentID)
+	if err != nil {
+		log.Println(err)
+		utils.Return(ctx, errs.BadRequest)
+		return
+	}
+
 	ctx.JSON(200, tasks)
 }
 

@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/dollarkillerx/common v0.0.3
 	github.com/dollarkillerx/jwt v0.0.4
-	github.com/dollarkillerx/processes v0.0.4
+	github.com/dollarkillerx/processes v0.0.5
 	github.com/dollarkillerx/urllib v1.13.16
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/validator/v10 v10.10.0

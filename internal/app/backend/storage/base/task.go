@@ -190,10 +190,21 @@ func (b *Base) GetSubtasksBySubtasksID(subtaskID string) (*models.Subtasks, erro
 		return nil, err
 	}
 
+	if sub.AgentID != "" {
+		var agent models.Agent
+		err := b.db.Model(&models.Agent{}).Where("id = ?", sub.AgentID).First(&agent).Error
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+
+		sub.AgentName = agent.AgentName
+	}
+
 	return &sub, nil
 }
 
-func (b *Base) CreateTaskLog(subtasksID string, taskType enum.TaskType) (id string, err error) {
+func (b *Base) CreateTaskLog(subtasksID string, gitSSH string, taskType enum.TaskType) (id string, err error) {
 	id = utils.GenerateID()
 
 	subtasks, err := b.GetSubtasksBySubtasksID(subtasksID)
@@ -206,6 +217,14 @@ func (b *Base) CreateTaskLog(subtasksID string, taskType enum.TaskType) (id stri
 		return "", err
 	}
 
+	if gitSSH != "" {
+		err = b.db.Model(&models.Subtasks{}).Where("id = ?", subtasksID).Update("git_addr", gitSSH).Error
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+
 	err = b.db.Model(&models.TaskLog{}).Create(&models.TaskLog{
 		BaseModel:   models.BaseModel{ID: id},
 		TaskID:      subtasks.TaskID,
@@ -215,6 +234,7 @@ func (b *Base) CreateTaskLog(subtasksID string, taskType enum.TaskType) (id stri
 		TaskStage:   enum.TaskStageBuild,
 		TaskStatus:  enum.TaskStatusWait,
 		TaskType:    taskType,
+		AgentID:     subtasks.AgentName,
 	}).Error
 	if err != nil {
 		log.Println(err)
@@ -266,6 +286,7 @@ func (b *Base) updateTaskOldLogs() {
 	err := b.db.Model(&models.TaskLog{}).Where("task_status in (?)", []interface{}{enum.TaskStatusWait, enum.TaskStatusRunning}).Find(&logs).Error
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	for _, v := range logs {
@@ -279,4 +300,44 @@ func (b *Base) updateTaskOldLogs() {
 			}
 		}
 	}
+}
+
+// RecieveTaskByLog 通过日志获取任务
+func (b *Base) RecieveTaskByLog(agentName string) (subs []models.Subtasks, err error) {
+	var taskLogs []models.TaskLog
+	err = b.db.Model(&models.TaskLog{}).
+		Where("agent_id = ?", agentName).
+		Where("task_status = ?", enum.TaskStatusWait).Find(&taskLogs).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if len(taskLogs) == 0 {
+		return
+	}
+
+	var subID []string
+	for _, v := range taskLogs {
+		subID = append(subID, v.SubtasksID)
+	}
+
+	err = b.db.Model(&models.Subtasks{}).Where("id in (?)", subID).Find(&subs).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if len(subs) == 0 {
+		return
+	}
+
+	for i, v := range subs {
+		for _, vv := range taskLogs {
+			if v.ID == vv.SubtasksID {
+				subs[i].LogID = vv.ID
+				subs[i].TaskType = vv.TaskType
+			}
+		}
+	}
+
+	return
 }

@@ -13,6 +13,7 @@ type TaskLog struct {
 	TaskStatus  enum.TaskStatus `gorm:"type:varchar(600);index" json:"task_status"`
 	TaskStage   enum.TaskStage  `gorm:"type:varchar(600);index" json:"task_stage"`
 	Log         string          `gorm:"type:text"`
+	AgentID     string          `gorm:"type:varchar(600);index" json:"agent_id"`
 
 	DisplayTime string `gorm:"-" json:"display_time"`
 }
@@ -38,11 +39,11 @@ type Subtasks struct {
 	Description string          `gorm:"type:text" json:"description"`
 	Payload     string          `gorm:"type:text" json:"payload"` // git payload
 	Disabled    bool            `gorm:"index" json:"disabled"`    //　禁用
+	GitAddr     string          `gorm:"type:text"  json:"git_addr"`
 
 	LogID     string        `json:"log_id" gorm:"-"`     // 其他字段使用
 	TaskType  enum.TaskType `gorm:"-" json:"task_type"`  // 其他字段使用
 	AgentName string        `gorm:"-" json:"agent_name"` // 其他字段使用
-	GitAddr   string        `json:"git_addr" gorm:"-"`   // 其他字段使用
 }
 
 type Instruction struct {

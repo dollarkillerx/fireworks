@@ -40,7 +40,8 @@ type task interface {
 	DelSubtasks(subtaskID string) error
 	UpdateSubtasks(subtaskID string, instruction string, description string) error
 
-	CreateTaskLog(subtasksID string, taskType enum.TaskType) (id string, err error)
+	CreateTaskLog(subtasksID string, gitSSH string, taskType enum.TaskType) (id string, err error)
 	UpdateTaskLog(logID string, taskStatus enum.TaskStatus, taskStage enum.TaskStage, logText string) error
 	GetTaskLog(taskID string, subtasksID string) (logs []models.TaskLog, err error)
+	RecieveTaskByLog(agentName string) (subs []models.Subtasks, err error)
 }
