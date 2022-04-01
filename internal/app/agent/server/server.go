@@ -100,7 +100,7 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 	defer lock.Unlock()
 
 	if sub.GitAddr == "" {
-		err := errors.New("Subtasks GitAddr is null")
+		err := errors.New("Subtasks GitAddr is null " + sub.Name + "  " + sub.ID)
 		log.Println(err)
 		a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
 		return
@@ -109,19 +109,19 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 	var instruction models.Instruction
 	err := json.Unmarshal([]byte(sub.Instruction), &instruction)
 	if err != nil {
-		err = fmt.Errorf("Instruction 解析失败: " + err.Error())
+		err = fmt.Errorf("Instruction 解析失败: " + err.Error() + " " + sub.Name + "  " + sub.ID)
 		log.Println(err)
 		a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
 		return
 	}
 	if len(instruction.Build) == 0 || len(instruction.Deploy) == 0 {
-		err = fmt.Errorf("Instruction 解析失败: " + err.Error())
+		err = fmt.Errorf("Instruction 解析失败: " + err.Error() + " " + sub.Name + "  " + sub.ID)
 		log.Println(err)
 		a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
 		return
 	}
 
-	exec := processes.NewExecLinuxGen("", "", time.Minute*3)
+	exec := processes.NewExecLinuxGen("", "bash", time.Hour)
 	_, err = exec.Exec("cd " + a.conf.Workspace)
 	if err != nil {
 		log.Println(err)
@@ -192,7 +192,6 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 				a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
 				return
 			}
-			log.Println(r)
 			body += fmt.Sprintf("%s\n", r)
 		}
 

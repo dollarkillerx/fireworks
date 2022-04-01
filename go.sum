@@ -111,8 +111,8 @@ github.com/dollarkillerx/common v0.0.3 h1:fQ4UxmS7dOzHdMqjMsV+V97foclFQKFDIxmZTV
 github.com/dollarkillerx/common v0.0.3/go.mod h1:i78p63/PxmO8YrrzMnr+yWwkFOCG0lFrJz7JEBIL+ck=
 github.com/dollarkillerx/jwt v0.0.4 h1:63de3dg3PmaBDNF2eabHDkpKSr+Wyj4eMXiwV7D8yJ8=
 github.com/dollarkillerx/jwt v0.0.4/go.mod h1:i2Lekf+Qt+y+0XlQ+FhtbE9msU7OWKR8a11lFWJu4EA=
-github.com/dollarkillerx/processes v0.0.5 h1:YNcvDg3HGeh91QFQin3HGIMO0aWejG0mvKsKggpNOFU=
-github.com/dollarkillerx/processes v0.0.5/go.mod h1:LgxcR+R9XlMfSE38MxYyBkV6i8tIaCOz3HBWyV3pGoc=
+github.com/dollarkillerx/processes v0.0.8 h1:rRqlrGufPF/icrpBTcShuTME9GyMjzVYQOe14xm4YTc=
+github.com/dollarkillerx/processes v0.0.8/go.mod h1:vX7GGwI/vli+Ysd7p5a3o8cMRCQLKnWHUoYSTw7Xzbk=
 github.com/dollarkillerx/urllib v1.13.16 h1:uBjhLYuRw/Gr2IZkMtWgEzlZfpx/dXPFEaNd1SaAVEY=
 github.com/dollarkillerx/urllib v1.13.16/go.mod h1:PARM2eEF6LGZs+LU1iP0Q8MdtIMadV+APnG9qz7ny8E=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
