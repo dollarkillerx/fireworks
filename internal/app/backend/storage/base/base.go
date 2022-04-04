@@ -28,6 +28,7 @@ func NewBase() storage.Interface {
 		&models.TaskLog{},
 		&models.Task{},
 		&models.Subtasks{},
+		&models.Configuration{},
 	)
 
 	base := &Base{db: postgres}

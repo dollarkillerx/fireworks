@@ -40,10 +40,10 @@ type Subtasks struct {
 	Payload     string          `gorm:"type:text" json:"payload"` // git payload
 	Disabled    bool            `gorm:"index" json:"disabled"`    //　禁用
 	GitAddr     string          `gorm:"type:text"  json:"git_addr"`
-
-	LogID     string        `json:"log_id" gorm:"-"`     // 其他字段使用
-	TaskType  enum.TaskType `gorm:"-" json:"task_type"`  // 其他字段使用
-	AgentName string        `gorm:"-" json:"agent_name"` // 其他字段使用
+	Token       string          `gorm:"type:varchar(600);index" json:"token"`
+	LogID       string          `json:"log_id" gorm:"-"`     // 其他字段使用
+	TaskType    enum.TaskType   `gorm:"-" json:"task_type"`  // 其他字段使用
+	AgentName   string          `gorm:"-" json:"agent_name"` // 其他字段使用
 }
 
 type Instruction struct {
@@ -53,4 +53,11 @@ type Instruction struct {
 	Reboot []string `json:"reboot"`
 	Stop   []string `json:"stop"`
 	Delete []string `json:"delete"`
+}
+
+type Configuration struct {
+	BaseModel
+	SubtaskID string `gorm:"type:varchar(600);index" json:"subtask_id"`
+	Filename  string `gorm:"text" json:"filename"`
+	Body      string `gorm:"text" json:"body"`
 }
