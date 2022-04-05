@@ -61,6 +61,11 @@ func (b *Backend) router() {
 		v1Api.GET("task_logs", b.taskLogs)
 	}
 
+	api := b.app.Group("/api/v1")
+	{
+		api.GET("configurations", b.configurations)
+	}
+
 	webhook := b.app.Group("/webhook")
 	{
 		webhook.POST("/task", b.webHookTask)

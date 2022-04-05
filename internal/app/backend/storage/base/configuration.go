@@ -65,3 +65,13 @@ func (b *Base) DeleteConfiguration(configurationID string) error {
 
 	return nil
 }
+
+func (b *Base) GetConfigurationBySubtaskID(subtaskID string) (item []models.Configuration, err error) {
+	err = b.db.Model(&models.Configuration{}).Where("subtask_id = ?", subtaskID).Find(&item).Error
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return
+}

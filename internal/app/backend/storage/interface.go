@@ -36,6 +36,7 @@ type task interface {
 
 	CreateSubtasks(taskID string, name string, agentID string, branch string, action enum.TaskAction, instruction string, description string) error
 	GetSubtasks(taskID string) ([]models.Subtasks, error)
+	GetSubtasksByToken(token string) (*models.Subtasks, error)
 	GetSubtasksBySubtasksID(subtaskID string) (*models.Subtasks, error)
 	DisabledSubtasks(subtaskID string) error
 	DelSubtasks(subtaskID string) error
@@ -50,6 +51,7 @@ type task interface {
 type configuration interface {
 	Configurations(subtask string) ([]models.Configuration, error)
 	GetConfigurationByID(id string) (*models.Configuration, error)
+	GetConfigurationBySubtaskID(id string) ([]models.Configuration, error)
 	CreateConfiguration(subtask string, filename string, body string) error
 	ModifyConfiguration(configurationID string, filename string, body string) error
 	DeleteConfiguration(configurationID string) error

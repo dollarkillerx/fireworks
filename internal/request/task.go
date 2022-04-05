@@ -51,3 +51,7 @@ type ModifyConfiguration struct {
 type ConfigurationID struct {
 	ConfigurationID string `json:"configuration_id" form:"configuration_id"  binding:"required"`
 }
+
+type ConfigurationToken struct {
+	ConfigurationToken string `json:"configuration_token" form:"configuration_token"  binding:"required"`
+}

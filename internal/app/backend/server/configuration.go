@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/dollarkillerx/fireworks/internal/pkg/errs"
 	"github.com/dollarkillerx/fireworks/internal/request"
+	"github.com/dollarkillerx/fireworks/internal/response"
 	"github.com/dollarkillerx/fireworks/internal/utils"
 	"github.com/gin-gonic/gin"
 
@@ -98,4 +99,36 @@ func (b *Backend) deleteConfiguration(ctx *gin.Context) {
 	}
 
 	utils.Return(ctx, gin.H{})
+}
+
+func (b *Backend) configurations(ctx *gin.Context) {
+	var req request.ConfigurationToken
+	err := ctx.ShouldBindQuery(&req)
+	if err != nil {
+		log.Println()
+		utils.Return(ctx, errs.BadRequest)
+		return
+	}
+
+	subtasks, err := b.db.GetSubtasksByToken(req.ConfigurationToken)
+	if err != nil {
+		utils.Return(ctx, errs.SqlSystemError)
+		return
+	}
+
+	cfgs, err := b.db.GetConfigurationBySubtaskID(subtasks.ID)
+	if err != nil {
+		utils.Return(ctx, errs.BadRequest)
+		return
+	}
+
+	var resp response.Configurations
+	for _, v := range cfgs {
+		resp.Configs = append(resp.Configs, response.ConfigurationItem{
+			Filename: v.Filename,
+			Body:     v.Body,
+		})
+	}
+
+	ctx.JSON(200, resp)
 }
