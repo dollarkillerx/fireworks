@@ -48,6 +48,16 @@ func (b *Backend) router() {
 			subtask.POST("stop", b.stopSubtask)
 		}
 
+		// Configuration Center
+		configuration := v1Api.Group("/configuration")
+		{
+			configuration.GET("index", b.configuration)
+			configuration.POST("create", b.createConfiguration)
+			configuration.POST("modify", b.modifyConfiguration)
+			configuration.POST("delete", b.deleteConfiguration)
+			configuration.GET("item", b.configurationItem)
+		}
+
 		v1Api.GET("task_logs", b.taskLogs)
 	}
 

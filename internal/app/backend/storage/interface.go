@@ -12,6 +12,7 @@ type Interface interface {
 	user
 	agent
 	task
+	configuration
 }
 
 type user interface {
@@ -44,4 +45,12 @@ type task interface {
 	UpdateTaskLog(logID string, taskStatus enum.TaskStatus, taskStage enum.TaskStage, logText string) error
 	GetTaskLog(taskID string, subtasksID string) (logs []models.TaskLog, err error)
 	RecieveTaskByLog(agentName string) (subs []models.Subtasks, err error)
+}
+
+type configuration interface {
+	Configurations(subtask string) ([]models.Configuration, error)
+	GetConfigurationByID(id string) (*models.Configuration, error)
+	CreateConfiguration(subtask string, filename string, body string) error
+	ModifyConfiguration(configurationID string, filename string, body string) error
+	DeleteConfiguration(configurationID string) error
 }

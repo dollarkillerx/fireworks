@@ -35,3 +35,19 @@ type UpdateSubtask struct {
 	Instruction string `json:"instruction" binding:"required"` // 指令
 	Description string `json:"description"`
 }
+
+type CreateConfiguration struct {
+	Subtask  string `json:"subtask" binding:"required"`
+	Filename string `json:"filename" binding:"required"`
+	Body     string `json:"body" binding:"required"`
+}
+
+type ModifyConfiguration struct {
+	ConfigurationID string `json:"configuration_id" binding:"required"`
+	Filename        string `json:"filename"`
+	Body            string `json:"body"`
+}
+
+type ConfigurationID struct {
+	ConfigurationID string `json:"configuration_id" form:"configuration_id"  binding:"required"`
+}

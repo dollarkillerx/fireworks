@@ -55,6 +55,13 @@ type Instruction struct {
 	Delete []string `json:"delete"`
 }
 
+//type ConfigurationProject struct {
+//	BaseModel
+//	Name string `json:"name"`
+//	Token string `json:"token"`
+//	Description string `json:"description"`
+//}
+
 type Configuration struct {
 	BaseModel
 	SubtaskID string `gorm:"type:varchar(600);index" json:"subtask_id"`
