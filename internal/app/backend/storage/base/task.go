@@ -93,10 +93,19 @@ func (b *Base) DelTask(taskID string) (err error) {
 		return err
 	}
 
-	err = begin.Model(&models.Subtasks{}).Where("task_id = ?", taskID).Unscoped().Delete(&models.Subtasks{}).Error
+	var del models.Subtasks
+	err = begin.Model(&models.Subtasks{}).Where("task_id = ?", taskID).Unscoped().Delete(&del).Error
 	if err != nil {
 		log.Println(err)
 		return err
+	}
+
+	if del.ID != "" {
+		err = begin.Model(&models.Configuration{}).Where("id = ?", del.ID).Unscoped().Delete(&models.Configuration{}).Error
+		if err != nil {
+			log.Println(err)
+			return err
+		}
 	}
 
 	return nil
@@ -122,6 +131,7 @@ func (b *Base) CreateSubtasks(taskID string, name string, agentID string, branch
 		Action:      action,
 		Instruction: instruction,
 		Description: description,
+		Token:       utils.RandKey(6),
 	}).Error
 	if err != nil {
 		log.Println(err)
@@ -149,8 +159,22 @@ func (b *Base) DisabledSubtasks(subtasksID string) error {
 	return nil
 }
 
-func (b *Base) DelSubtasks(subtasksID string) error {
-	err := b.db.Model(&models.Subtasks{}).Where("id = ?", subtasksID).Unscoped().Delete(&models.Subtasks{}).Error
+func (b *Base) DelSubtasks(subtasksID string) (err error) {
+	begin := b.db.Begin()
+	defer func() {
+		if err == nil {
+			begin.Commit()
+		} else {
+			begin.Rollback()
+		}
+	}()
+	err = begin.Model(&models.Subtasks{}).Where("id = ?", subtasksID).Unscoped().Delete(&models.Subtasks{}).Error
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	err = begin.Model(&models.Configuration{}).Where("id = ?", subtasksID).Unscoped().Delete(&models.Configuration{}).Error
 	if err != nil {
 		log.Println(err)
 		return err
@@ -340,4 +364,15 @@ func (b *Base) RecieveTaskByLog(agentName string) (subs []models.Subtasks, err e
 	}
 
 	return
+}
+
+func (b *Base) GetSubtasksByToken(token string) (*models.Subtasks, error) {
+	var sub models.Subtasks
+	err := b.db.Model(&models.Subtasks{}).Where("token = ?", token).First(&sub).Error
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &sub, nil
 }
