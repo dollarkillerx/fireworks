@@ -172,7 +172,14 @@ func (a *AgentServer) performTaskCoreItem(sub models.Subtasks) {
 			return
 		}
 	} else {
-		_, err := exec.Exec("git pull")
+		_, err := exec.Exec("git checkout .")
+		if err != nil {
+			log.Println(err)
+			a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
+			return
+		}
+
+		_, err = exec.Exec("git pull")
 		if err != nil {
 			log.Println(err)
 			a.logs(sub.LogID, enum.TaskStatusFailed, enum.TaskStageBuild, err.Error())
